@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sales Comp Calculator</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-4xl mx-auto space-y-6">
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">Q1 Ramp Period</h2>
+      <div class="grid gap-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Month 1 Discovery Meetings (Target: 15)</label>
+            <input type="number" id="m1-meetings" class="w-full border rounded p-2" value="0">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Pipeline (Target: $50,000)</label>
+            <input type="number" id="m1-pipeline" class="w-full border rounded p-2" value="0">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Month 2 Discovery Meetings (Target: 20)</label>
+            <input type="number" id="m2-meetings" class="w-full border rounded p-2" value="0">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Pipeline (Target: $100,000)</label>
+            <input type="number" id="m2-pipeline" class="w-full border rounded p-2" value="0">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Month 3 Discovery Meetings (Target: 25)</label>
+            <input type="number" id="m3-meetings" class="w-full border rounded p-2" value="0">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Pipeline (Target: $150,000)</label>
+            <input type="number" id="m3-pipeline" class="w-full border rounded p-2" value="0">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">ACV Targets (Q2-Q4)</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Q2 Actual (Target: $100,000)</label>
+          <input type="number" id="q2-actual" class="w-full border rounded p-2" value="0">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Q3 Actual (Target: $125,000)</label>
+          <input type="number" id="q3-actual" class="w-full border rounded p-2" value="0">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Q4 Actual (Target: $150,000)</label>
+          <input type="number" id="q4-actual" class="w-full border rounded p-2" value="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">Customer Success Metrics</h2>
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Q1 Implementation %</label>
+            <input type="number" id="q1-impl" class="w-full border rounded p-2" value="0">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Q1 Feature Usage %</label>
+            <input type="number" id="q1-usage" class="w-full border rounded p-2" value="0">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Q2 Implementation %</label>
+            <input type="number" id="q2-impl" class="w-full border rounded p-2" value="0">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Q2 Feature Usage %</label>
+            <input type="number" id="q2-usage" class="w-full border rounded p-2" value="0">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Q3 Implementation %</label>
+            <input type="number" id="q3-impl" class="w-full border rounded p-2" value="0">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Q3 Feature Usage %</label>
+            <input type="number" id="q3-usage" class="w-full border rounded p-2" value="0">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Q4 Implementation %</label>
+            <input type="number" id="q4-impl" class="w-full border rounded p-2" value="0">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Q4 Feature Usage %</label>
+            <input type="number" id="q4-usage" class="w-full border rounded p-2" value="0">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">Total Compensation</h2>
+      <div class="text-3xl font-bold" id="total-comp">$75,000</div>
+      <div class="mt-4 space-y-2">
+        <div>Base Salary: $75,000</div>
+        <div>Ramp Commission: <span id="ramp-comm">$0</span></div>
+        <div>ACV Commission: <span id="acv-comm">$0</span></div>
+        <div>CS Commission: <span id="cs-comm">$0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => input.addEventListener('input', calculateTotal));
+
+    function calculateRampCommission() {
+      let total = 0;
+      if (Number(document.getElementById('m1-meetings').value) >= 15 && 
+          Number(document.getElementById('m1-pipeline').value) >= 50000) total += 1042;
+      if (Number(document.getElementById('m2-meetings').value) >= 20 && 
+          Number(document.getElementById('m2-pipeline').value) >= 100000) total += 1042;
+      if (Number(document.getElementById('m3-meetings').value) >= 25 && 
+          Number(document.getElementById('m3-pipeline').value) >= 150000) total += 1041;
+      return total;
+    }
+
+    function calculateACVCommission(actual, target) {
+      if (actual <= target) {
+        return actual * 0.125;
+      }
+      return (target * 0.125) + ((actual - target) * 0.1875);
+    }
+
+    function calculateCSPayout(impl, usage) {
+      return impl >= 100 && usage >= 75 ? 3125 : 0;
+    }
+
+    function calculateTotal() {
+      const baseSalary = 75000;
+      
+      // Ramp Commission
+      const rampComm = calculateRampCommission();
+      
+      // ACV Commission
+      const q2Comm = calculateACVCommission(Number(document.getElementById('q2-actual').value), 100000);
+      const q3Comm = calculateACVCommission(Number(document.getElementById('q3-actual').value), 125000);
+      const q4Comm = calculateACVCommission(Number(document.getElementById('q4-actual').value), 150000);
+      const acvComm = q2Comm + q3Comm + q4Comm;
+      
+      // CS Commission
+      const q1CS = calculateCSPayout(
+        Number(document.getElementById('q1-impl').value),
+        Number(document.getElementById('q1-usage').value)
+      );
+      const q2CS = calculateCSPayout(
+        Number(document.getElementById('q2-impl').value),
+        Number(document.getElementById('q2-usage').value)
+      );
+      const q3CS = calculateCSPayout(
+        Number(document.getElementById('q3-impl').value),
+        Number(document.getElementById('q3-usage').value)
+      );
+      const q4CS = calculateCSPayout(
+        Number(document.getElementById('q4-impl').value),
+        Number(document.getElementById('q4-usage').value)
+      );
+      const csComm = q1CS + q2CS + q3CS + q4CS;
+      
+      // Update displays
+      document.getElementById('ramp-comm').textContent = `$${rampComm.toLocaleString()}`;
+      document.getElementById('acv-comm').textContent = `$${Math.round(acvComm).toLocaleString()}`;
+      document.getElementById('cs-comm').textContent = `$${csComm.toLocaleString()}`;
+      document.getElementById('total-comp').textContent = 
+        `$${Math.round(baseSalary + rampComm + acvComm + csComm).toLocaleString()}`;
+    }
+  </script>
+</body>
+</html>
